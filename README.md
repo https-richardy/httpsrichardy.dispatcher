@@ -26,7 +26,10 @@ Add HttpsRichardy.Dispatcher to your service collection:
 ```csharp
 using HttpsRichardy.Dispatcher.Extensions;
 
-builder.Services.AddDispatcher(typeof(Program));
+builder.Services.AddDispatcher(options =>
+{
+    options.ScanAssembly<Program>();
+});
 ```
 
 The `AddDispatcher` method automatically scans the provided assemblies and registers all message and event handlers.
@@ -169,24 +172,6 @@ HttpsRichardy.Dispatcher provides four core interfaces:
 | `IDispatchableHandler<TMessage, TResult>` | Processes messages | 1:1 Request-Response |
 | `IEvent` | Base interface for events | 1:N Pub/Sub |
 | `IEventHandler<TEvent>` | Handles events | 1:N Pub/Sub |
-
-## API Reference
-
-### AddDispatcher Extension
-
-```csharp
-services.AddDispatcher(params Type[] markerTypes)
-```
-
-Automatically discovers and registers all message and event handlers in the provided assemblies.
-
-**Parameters:**
-- `markerTypes`: One or more types whose assemblies will be scanned for handlers
-
-**Example:**
-```csharp
-services.AddDispatcher(typeof(Program));
-```
 
 ## Best Practices
 
