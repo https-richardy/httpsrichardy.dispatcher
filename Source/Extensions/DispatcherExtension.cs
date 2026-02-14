@@ -2,17 +2,19 @@ namespace HttpsRichardy.Dispatcher.Extensions;
 
 public static class DispatcherExtension
 {
-    public static void AddDispatcher(this IServiceCollection services, params Type[] markerTypes)
+    public static void AddDispatcher(this IServiceCollection services, Action<DispatcherOptions> configure)
     {
         services.AddSingleton<IDispatcher, Dispatcher>();
         services.AddSingleton<IEventDispatcher, EventDispatcher>();
 
-        var assemblies = markerTypes.Select(type => type.Assembly)
-            .Distinct()
-            .ToArray();
+        var options = new DispatcherOptions();
 
-        var handlers = assemblies
-            .SelectMany(assembly => assembly.GetTypes())
+        configure.Invoke(options);
+
+        if (options.Assemblies.Count == 0)
+            throw new InvalidOperationException("No assemblies were configured for dispatcher scanning.");
+
+        var handlers = options.Assemblies.SelectMany(assembly => assembly.GetTypes())
             .Where(type => !type.IsAbstract && !type.IsInterface)
             .SelectMany(type => type.GetInterfaces()
                 .Where(metadata => metadata.IsGenericType)
