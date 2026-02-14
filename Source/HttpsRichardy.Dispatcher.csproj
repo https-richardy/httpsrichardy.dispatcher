@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>HttpsRichardy.Dispatcher</PackageId>
+    <Description>lightweight dispatcher library for handling dispatchables and events in .NET applications.</Description>
+    <PackageTags>dispatcher;mediator;events;dispatchables</PackageTags>
+    <RepositoryUrl>https://github.com/https-richardy/httpsrichardy.dispatcher</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/https-richardy/httpsrichardy.dispatcher</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+  </ItemGroup>
+
+</Project>
