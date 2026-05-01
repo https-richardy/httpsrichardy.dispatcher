@@ -4,8 +4,8 @@ public static class DispatcherExtension
 {
     public static void AddDispatcher(this IServiceCollection services, Action<DispatcherOptions> configure)
     {
-        services.AddSingleton<IDispatcher, Dispatcher>();
-        services.AddSingleton<IEventDispatcher, EventDispatcher>();
+        services.AddScoped<IDispatcher, Dispatcher>();
+        services.AddScoped<IEventDispatcher, EventDispatcher>();
 
         var options = new DispatcherOptions();
 
