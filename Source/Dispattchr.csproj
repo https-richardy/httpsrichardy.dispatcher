@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Dispattchr</PackageId>
+    <Title>Dispattchr</Title>
+    <Description>lightweight dispatcher library for handling dispatchables and events in .NET applications.</Description>
+    <PackageTags>dispatcher;mediator;events;dispatchables</PackageTags>
+    <RepositoryUrl>https://github.com/https-richardy/httpsrichardy.dispatcher</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/https-richardy/httpsrichardy.dispatcher</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\Assets\icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+  </ItemGroup>
+
+</Project>
