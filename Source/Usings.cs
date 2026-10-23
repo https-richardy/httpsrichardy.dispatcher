@@ -5,5 +5,5 @@ global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.DependencyInjection;
 
-global using HttpsRichardy.Dispatcher.Contracts;
-global using HttpsRichardy.Dispatcher.Queue;
+global using Dispattchr.Contracts;
+global using Dispattchr.Queue;

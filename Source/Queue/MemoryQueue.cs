@@ -1,4 +1,4 @@
-namespace HttpsRichardy.Dispatcher.Queue;
+namespace Dispattchr.Queue;
 
 internal sealed class MemoryQueue<TContext> : IEnqueuer<TContext>
 {

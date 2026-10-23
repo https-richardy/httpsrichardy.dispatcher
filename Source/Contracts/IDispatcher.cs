@@ -1,4 +1,4 @@
-namespace HttpsRichardy.Dispatcher.Contracts;
+namespace Dispattchr.Contracts;
 
 public interface IDispatcher
 {

@@ -1,4 +1,4 @@
-﻿namespace HttpsRichardy.Dispatcher.Extensions;
+﻿namespace Dispattchr.Extensions;
 
 public sealed class DispatcherOptions
 {

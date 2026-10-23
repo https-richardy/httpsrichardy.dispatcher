@@ -1,4 +1,4 @@
-# HttpsRichardy.Dispatcher
+# Dispattchr
 
 MediatR, once a free library, now requires a commercial license. We needed a lightweight alternative without the overhead, so we built dispatcher. It's free, open-source, and gets the job done without unnecessary complexity.
 
@@ -14,17 +14,17 @@ MediatR, once a free library, now requires a commercial license. We needed a lig
 ## Installation
 
 ```bash
-dotnet add package HttpsRichardy.Dispatcher
+dotnet add package Dispattchr
 ```
 
 ## Quick Start
 
 ### 1. Configure Dependency Injection
 
-Add HttpsRichardy.Dispatcher to your service collection:
+Add Dispattchr to your service collection:
 
 ```csharp
-using HttpsRichardy.Dispatcher.Extensions;
+using Dispattchr.Extensions;
 
 builder.Services.AddDispatcher(options =>
 {
@@ -36,7 +36,7 @@ The `AddDispatcher` method automatically scans the provided assemblies and regis
 
 ## Usage Patterns
 
-HttpsRichardy.Dispatcher supports two distinct patterns for different scenarios:
+Dispattchr supports three distinct patterns for different scenarios:
 
 ### Pattern 1: IDispatcher - One-to-One (1:1) Request-Response
 
@@ -175,7 +175,7 @@ The queue is backed by `System.Threading.Channels` (unbounded, single reader). I
 The queue is opt-in. Register it with its own assembly scan — only applications that call `AddMemoryQueue` take on the hosting dependency:
 
 ```csharp
-using HttpsRichardy.Dispatcher.Extensions;
+using Dispattchr.Extensions;
 
 builder.Services.AddMemoryQueue(options =>
 {
@@ -233,7 +233,7 @@ The request returns right away; the handler runs in the background. An exception
 
 ## Contracts
 
-HttpsRichardy.Dispatcher provides these core interfaces:
+Dispattchr provides these core interfaces:
 
 | Interface | Purpose | Pattern |
 |-----------|---------|---------|
@@ -257,8 +257,8 @@ HttpsRichardy.Dispatcher provides these core interfaces:
 
 ## Contributing
 
-Contributions are welcome! Feel free to submit issues and pull requests to help improve HttpsRichardy.Dispatcher.
+Contributions are welcome! Feel free to submit issues and pull requests to help improve Dispattchr.
 
 ## Support
 
-If you find HttpsRichardy.Dispatcher helpful, consider giving it a ⭐ on GitHub!
+If you find Dispattchr helpful, consider giving it a ⭐ on GitHub!

@@ -1,4 +1,4 @@
-namespace HttpsRichardy.Dispatcher.Queue;
+namespace Dispattchr.Queue;
 
 internal sealed class QueueProcessor<TContext>(MemoryQueue<TContext> queue, IServiceScopeFactory factory, ILogger<QueueProcessor<TContext>> logger) : BackgroundService
 {

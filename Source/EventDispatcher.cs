@@ -1,4 +1,4 @@
-namespace HttpsRichardy.Dispatcher;
+namespace Dispattchr;
 
 internal sealed class EventDispatcher(IServiceProvider services) : IEventDispatcher
 {
