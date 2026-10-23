@@ -4,8 +4,8 @@ MediatR, once a free library, now requires a commercial license. We needed a lig
 
 ## Features
 
-- **Two distinct dispatching modes** for different use cases
-- **Zero external dependencies** - lightweight and fast
+- **Three distinct dispatching modes** for different use cases
+- **Opt-in in-memory background queue** to offload work off the HTTP pipeline
 - **Automatic handler discovery** via assembly scanning
 - **Full async/await support**
 - **Simple and intuitive API**
@@ -162,9 +162,78 @@ public sealed class UsersController(IDispatcher dispatcher, IEventDispatcher eve
 
 All three handlers will execute automatically when the event is published!
 
+---
+
+### Pattern 3: IEnqueuer - In-Memory Background Queue (fire-and-forget)
+
+Use `IEnqueuer` when you want to **offload work off the HTTP request pipeline**. The producer drops a context onto an in-memory queue and returns immediately, while a hosted `BackgroundService` consumes it and runs your handler outside the request lifetime. Ideal for exports, imports, notifications, and any slow side effect that shouldn't block the caller.
+
+The queue is backed by `System.Threading.Channels` (unbounded, single reader). It is a single-process, in-memory queue: enqueued items are **not persisted** and are lost on restart. For durable delivery, use a real broker.
+
+#### Enable the Queue
+
+The queue is opt-in. Register it with its own assembly scan — only applications that call `AddMemoryQueue` take on the hosting dependency:
+
+```csharp
+using HttpsRichardy.Dispatcher.Extensions;
+
+builder.Services.AddMemoryQueue(options =>
+{
+    options.ScanAssembly<Program>();
+});
+```
+
+This scans the assemblies for every `IQueueHandler<TContext>` and, for each context, wires up the in-memory queue, the `IEnqueuer<TContext>`, and a background consumer.
+
+#### Define Your Context
+
+```csharp
+public sealed record ExportCustomersScheme
+{
+    public DateTime? From { get; init; }
+    public DateTime? To { get; init; }
+}
+```
+
+#### Create a Queue Handler
+
+A context must have **exactly one** handler. It runs in its own dependency-injection scope, so you can safely inject scoped services such as repositories:
+
+```csharp
+public sealed class ExportCustomersHandler(ICustomerRepository repository, IStorageClient storage) :
+    IQueueHandler<ExportCustomersScheme>
+{
+    public async Task HandleAsync(ExportCustomersScheme context, CancellationToken cancellation = default)
+    {
+        var customers = await repository.FilterAsync(context.From, context.To, cancellation);
+        await storage.ExportAsync(customers, cancellation);
+    }
+}
+```
+
+#### Enqueue Work
+
+```csharp
+[ApiController]
+[Route("api/v1/customers")]
+public sealed class CustomersController(IEnqueuer<ExportCustomersScheme> queue) : ControllerBase
+{
+    [HttpPost("export")]
+    public async Task<IActionResult> ExportAsync(
+        [FromBody] ExportCustomersScheme request, CancellationToken cancellation)
+    {
+        await queue.EnqueueAsync(request, cancellation);
+
+        return Accepted();
+    }
+}
+```
+
+The request returns right away; the handler runs in the background. An exception thrown by a handler is logged and the consumer keeps processing the next item.
+
 ## Contracts
 
-HttpsRichardy.Dispatcher provides four core interfaces:
+HttpsRichardy.Dispatcher provides these core interfaces:
 
 | Interface | Purpose | Pattern |
 |-----------|---------|---------|
@@ -172,6 +241,8 @@ HttpsRichardy.Dispatcher provides four core interfaces:
 | `IDispatchableHandler<TMessage, TResult>` | Processes messages | 1:1 Request-Response |
 | `IEvent` | Base interface for events | 1:N Pub/Sub |
 | `IEventHandler<TEvent>` | Handles events | 1:N Pub/Sub |
+| `IEnqueuer<TContext>` | Enqueues work onto the in-memory queue | Background fire-and-forget |
+| `IQueueHandler<TContext>` | Consumes queued work in the background | Background fire-and-forget |
 
 ## Best Practices
 
@@ -181,6 +252,7 @@ HttpsRichardy.Dispatcher provides four core interfaces:
 4. **Handle CancellationToken** - Respect cancellation tokens for graceful shutdown
 5. **Use Dependency Injection** - Let the container manage handler lifetimes
 6. **Separate Concerns** - Don't mix business logic with side effects; use events instead
+7. **Use IEnqueuer for Slow Side Effects** - Offload exports, imports, and notifications off the request pipeline; remember the queue is in-memory and not durable across restarts
 
 
 ## Contributing
